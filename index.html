@@ -3,57 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Butcher Duck | Portal de Macroscopia</title>
+    <title>Butcher Duck | Macro Portal</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <header class="main-header">
-        <div class="logo">Butcher Duck 🦆🔪</div>
-        <nav>
-            <span>Bem-vindo, Gui</span>
-            <button class="btn-logout">Sair</button>
+    <div class="wrapper">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <span class="logo">Butcher Duck 🦆</span>
+            </div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="loadContent('home')">Início</a></li>
+                <li class="nav-separator">SISTEMAS</li>
+                <li><a href="#" onclick="loadContent('gastro')">Gastrointestinal</a></li>
+                <li><a href="#" onclick="loadContent('mama')">Mama</a></li>
+                <li><a href="#" onclick="loadContent('genitourinario')">Genitourinário</a></li>
+                <li><a href="#" onclick="loadContent('ginecologico')">Ginecológico</a></li>
+                <li><a href="#" onclick="loadContent('pequenas')">Pequenas Peças</a></li>
+            </ul>
+            <div class="sidebar-footer">
+                <span>Dr. Gui</span>
+            </div>
         </nav>
-    </header>
 
-    <main class="container">
-        <section class="banner" id="main-banner" onclick="showSystems()">
-            <h1>Manual de Macroscopia</h1>
-            <p>Clique para explorar os protocolos por sistema</p>
-        </section>
-
-        <section class="systems-grid" id="systems-grid" style="display: none;">
-            <div class="card" onclick="location.href='sistemas/gastro.html'">
-                <div class="icon">🍱</div>
-                <h3>Gastrointestinal</h3>
-                <p>Esôfago, Estômago, Intestinos...</p>
-            </div>
-
-            <div class="card" onclick="location.href='sistemas/mama.html'">
-                <div class="icon">🎀</div>
-                <h3>Mama</h3>
-                <p>Quadrantectomias, Mastectomias...</p>
-            </div>
-
-            <div class="card" onclick="location.href='sistemas/genitourinario.html'">
-                <div class="icon">🔬</div>
-                <h3>Genitourinário</h3>
-                <p>Próstata, Rim, Bexiga...</p>
-            </div>
-
-            <div class="card" onclick="location.href='sistemas/ginecologico.html'">
-                <div class="icon">🩸</div>
-                <h3>Ginecológico</h3>
-                <p>Útero, Ovários, Vulva...</p>
-            </div>
-            
+        <main class="content-area" id="main-content">
+            <section class="banner">
+                <h1>Manual de Macroscopia</h1>
+                <p>Selecione um sistema na barra lateral para começar.</p>
             </section>
-    </main>
+        </main>
+    </div>
 
     <script>
-        function showSystems() {
-            document.getElementById('main-banner').style.display = 'none';
-            document.getElementById('systems-grid').style.display = 'grid';
+        // Função simples para trocar o conteúdo sem recarregar a página
+        function loadContent(sistema) {
+            const content = document.getElementById('main-content');
+            
+            const paginas = {
+                'home': `<h1>Manual de Macroscopia</h1><p>Selecione um sistema ao lado.</p>`,
+                'gastro': `<h1>Gastrointestinal</h1><p>Conteúdo de Estômago, Cólon e Esôfago em breve...</p>`,
+                'mama': `<h1>Mama</h1><p>Protocolos de Mastectomia e Quadrantectomia...</p>`
+                // Você pode adicionar os outros aqui
+            };
+
+            content.innerHTML = paginas[sistema] || `<h1>Em desenvolvimento</h1>`;
         }
     </script>
 </body>
