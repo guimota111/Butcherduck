@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butcher Duck | Portal de Macroscopia</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="logo">Butcher Duck 🦆🔪</div>
+        <nav>
+            <span>Bem-vindo, Gui</span>
+            <button class="btn-logout">Sair</button>
+        </nav>
+    </header>
+
+    <main class="container">
+        <section class="banner" id="main-banner" onclick="showSystems()">
+            <h1>Manual de Macroscopia</h1>
+            <p>Clique para explorar os protocolos por sistema</p>
+        </section>
+
+        <section class="systems-grid" id="systems-grid" style="display: none;">
+            <div class="card" onclick="location.href='sistemas/gastro.html'">
+                <div class="icon">🍱</div>
+                <h3>Gastrointestinal</h3>
+                <p>Esôfago, Estômago, Intestinos...</p>
+            </div>
+
+            <div class="card" onclick="location.href='sistemas/mama.html'">
+                <div class="icon">🎀</div>
+                <h3>Mama</h3>
+                <p>Quadrantectomias, Mastectomias...</p>
+            </div>
+
+            <div class="card" onclick="location.href='sistemas/genitourinario.html'">
+                <div class="icon">🔬</div>
+                <h3>Genitourinário</h3>
+                <p>Próstata, Rim, Bexiga...</p>
+            </div>
+
+            <div class="card" onclick="location.href='sistemas/ginecologico.html'">
+                <div class="icon">🩸</div>
+                <h3>Ginecológico</h3>
+                <p>Útero, Ovários, Vulva...</p>
+            </div>
+            
+            </section>
+    </main>
+
+    <script>
+        function showSystems() {
+            document.getElementById('main-banner').style.display = 'none';
+            document.getElementById('systems-grid').style.display = 'grid';
+        }
+    </script>
+</body>
+</html>
