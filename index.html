@@ -3,52 +3,425 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Butcher Duck | Macro Portal</title>
+    <title>Butcher Duck | Manual de Macroscopia</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div class="app">
 
-    <div class="wrapper">
-        <nav class="sidebar">
-            <div class="sidebar-header">
-                <span class="logo">Butcher Duck 🦆</span>
+    <!-- ===== SIDEBAR ===== -->
+    <nav class="sidebar">
+        <div class="sidebar-brand">
+            <div class="brand-emoji">🦆</div>
+            <div class="brand-text">
+                <span class="brand-name">Butcher Duck</span>
+                <span class="brand-tagline">Manual de Macroscopia</span>
             </div>
-            <ul class="nav-links">
-                <li><a href="#" onclick="loadContent('home')">Início</a></li>
-                <li class="nav-separator">SISTEMAS</li>
-                <li><a href="#" onclick="loadContent('gastro')">Gastrointestinal</a></li>
-                <li><a href="#" onclick="loadContent('mama')">Mama</a></li>
-                <li><a href="#" onclick="loadContent('genitourinario')">Genitourinário</a></li>
-                <li><a href="#" onclick="loadContent('ginecologico')">Ginecológico</a></li>
-                <li><a href="#" onclick="loadContent('pequenas')">Pequenas Peças</a></li>
-            </ul>
-            <div class="sidebar-footer">
-                <span>Dr. Gui</span>
-            </div>
-        </nav>
+        </div>
 
-        <main class="content-area" id="main-content">
-            <section class="banner">
-                <h1>Manual de Macroscopia</h1>
-                <p>Selecione um sistema na barra lateral para começar.</p>
-            </section>
-        </main>
+        <div class="sidebar-nav">
+            <a href="#" class="nav-item" id="nav-home" onclick="navigateTo('home'); return false;">
+                <span class="nav-icon">🏠</span>
+                <span>Início</span>
+            </a>
+
+            <div class="nav-label">SISTEMAS</div>
+
+            <!-- Gastrointestinal -->
+            <div class="nav-group">
+                <button class="nav-group-btn" id="btn-gastro" onclick="toggleGroup('gastro')">
+                    <span class="nav-icon">🫁</span>
+                    <span>Gastrointestinal</span>
+                    <span class="chevron">▾</span>
+                </button>
+                <div class="nav-sub-list" id="sub-gastro">
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','esofago'); return false;">Esôfago</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','estomago'); return false;">Estômago</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','intestino-delgado'); return false;">Intestino Delgado</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','colon-reto'); return false;">Cólon e Reto</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','apendice'); return false;">Apêndice</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','figado'); return false;">Fígado</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','vesicula-biliar'); return false;">Vesícula Biliar</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','pancreas'); return false;">Pâncreas</a>
+                </div>
+            </div>
+
+            <!-- Mama -->
+            <div class="nav-group">
+                <button class="nav-group-btn" id="btn-mama" onclick="toggleGroup('mama')">
+                    <span class="nav-icon">🩺</span>
+                    <span>Mama</span>
+                    <span class="chevron">▾</span>
+                </button>
+                <div class="nav-sub-list" id="sub-mama">
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','mastectomia-radical'); return false;">Mastectomia Radical Modificada</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','mastectomia-simples'); return false;">Mastectomia Simples</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','quadrantectomia'); return false;">Quadrantectomia</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','setorectomia'); return false;">Setorectomia</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','core-biopsy'); return false;">Core Biopsy</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('mama','linfonodo-sentinela'); return false;">Linfonodo Sentinela</a>
+                </div>
+            </div>
+
+            <!-- Genitourinário -->
+            <div class="nav-group">
+                <button class="nav-group-btn" id="btn-genito" onclick="toggleGroup('genito')">
+                    <span class="nav-icon">🫀</span>
+                    <span>Genitourinário</span>
+                    <span class="chevron">▾</span>
+                </button>
+                <div class="nav-sub-list" id="sub-genito">
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','rim'); return false;">Rim — Nefrectomia</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','bexiga'); return false;">Bexiga — Cistectomia</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','prostata'); return false;">Próstata</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','testiculo'); return false;">Testículo</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','penis'); return false;">Pênis</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('genito','ureter'); return false;">Ureter</a>
+                </div>
+            </div>
+
+            <!-- Ginecológico -->
+            <div class="nav-group">
+                <button class="nav-group-btn" id="btn-gineco" onclick="toggleGroup('gineco')">
+                    <span class="nav-icon">🌸</span>
+                    <span>Ginecológico</span>
+                    <span class="chevron">▾</span>
+                </button>
+                <div class="nav-sub-list" id="sub-gineco">
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-prolapso'); return false;">Útero de Prolapso Uterino</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-miomatose'); return false;">Útero de Miomatose</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-neoplasico'); return false;">Útero Neoplásico</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-inocente'); return false;">Ovário Inocente</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-cistico'); return false;">Ovário Cístico</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-maligno'); return false;">Ovário Maligno</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','tuba-uterina'); return false;">Tuba Uterina</a>
+                </div>
+            </div>
+
+            <!-- Pequenas Peças -->
+            <div class="nav-group">
+                <button class="nav-group-btn" id="btn-pequenas" onclick="toggleGroup('pequenas')">
+                    <span class="nav-icon">🔬</span>
+                    <span>Pequenas Peças</span>
+                    <span class="chevron">▾</span>
+                </button>
+                <div class="nav-sub-list" id="sub-pequenas">
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','pele'); return false;">Pele</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','linfonodo'); return false;">Linfonodo</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','partes-moles'); return false;">Partes Moles</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','tiroide'); return false;">Tireoide</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','paratiroide'); return false;">Paratireoide</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','glandula-salivar'); return false;">Glândula Salivar</a>
+                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','osso'); return false;">Osso</a>
+                </div>
+            </div>
+
+        </div><!-- /sidebar-nav -->
+
+        <div class="sidebar-footer">
+            <div class="footer-avatar">👨‍⚕️</div>
+            <div>
+                <span class="footer-name">Dr. Gui</span>
+                <span class="footer-role">Patologia Cirúrgica</span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content" id="main"></main>
+
+</div>
+
+<script>
+/* ============================================================
+   DATA
+============================================================ */
+const SISTEMAS = {
+    gastro: {
+        nome: 'Gastrointestinal',
+        icon: '🫁',
+        cor: '#ef4444',
+        desc: 'Protocolo de análise macroscópica do trato gastrointestinal e órgãos anexos.',
+        itens: {
+            esofago:          { nome: 'Esôfago',          icon: '📋' },
+            estomago:         { nome: 'Estômago',         icon: '📋' },
+            'intestino-delgado': { nome: 'Intestino Delgado',  icon: '📋' },
+            'colon-reto':     { nome: 'Cólon e Reto',     icon: '📋' },
+            apendice:         { nome: 'Apêndice',         icon: '📋' },
+            figado:           { nome: 'Fígado',           icon: '📋' },
+            'vesicula-biliar':{ nome: 'Vesícula Biliar',  icon: '📋' },
+            pancreas:         { nome: 'Pâncreas',         icon: '📋' },
+        }
+    },
+    mama: {
+        nome: 'Mama',
+        icon: '🩺',
+        cor: '#f97316',
+        desc: 'Protocolos de mastectomia, quadrantectomia e demais amostras mamárias.',
+        itens: {
+            'mastectomia-radical': { nome: 'Mastectomia Radical Modificada', icon: '📋' },
+            'mastectomia-simples': { nome: 'Mastectomia Simples',            icon: '📋' },
+            quadrantectomia:       { nome: 'Quadrantectomia',                icon: '📋' },
+            setorectomia:          { nome: 'Setorectomia',                   icon: '📋' },
+            'core-biopsy':         { nome: 'Core Biopsy',                    icon: '📋' },
+            'linfonodo-sentinela': { nome: 'Linfonodo Sentinela',            icon: '📋' },
+        }
+    },
+    genito: {
+        nome: 'Genitourinário',
+        icon: '🫀',
+        cor: '#8b5cf6',
+        desc: 'Protocolo de análise macroscópica do sistema genitourinário masculino e feminino.',
+        itens: {
+            rim:      { nome: 'Rim — Nefrectomia',      icon: '📋' },
+            bexiga:   { nome: 'Bexiga — Cistectomia',   icon: '📋' },
+            prostata: { nome: 'Próstata',               icon: '📋' },
+            testiculo:{ nome: 'Testículo',              icon: '📋' },
+            penis:    { nome: 'Pênis',                  icon: '📋' },
+            ureter:   { nome: 'Ureter',                 icon: '📋' },
+        }
+    },
+    gineco: {
+        nome: 'Ginecológico',
+        icon: '🌸',
+        cor: '#ec4899',
+        desc: 'Protocolo de análise macroscópica de peças do sistema ginecológico.',
+        itens: {
+            'utero-prolapso':   { nome: 'Útero de Prolapso Uterino', icon: '📋' },
+            'utero-miomatose':  { nome: 'Útero de Miomatose',        icon: '📋' },
+            'utero-neoplasico': { nome: 'Útero Neoplásico',          icon: '📋' },
+            'ovario-inocente':  { nome: 'Ovário Inocente',           icon: '📋' },
+            'ovario-cistico':   { nome: 'Ovário Cístico',            icon: '📋' },
+            'ovario-maligno':   { nome: 'Ovário Maligno',            icon: '📋' },
+            'tuba-uterina':     { nome: 'Tuba Uterina',              icon: '📋' },
+        }
+    },
+    pequenas: {
+        nome: 'Pequenas Peças',
+        icon: '🔬',
+        cor: '#14b8a6',
+        desc: 'Protocolo de análise macroscópica de pequenas peças e biópsias cirúrgicas.',
+        itens: {
+            pele:              { nome: 'Pele',              icon: '📋' },
+            linfonodo:         { nome: 'Linfonodo',         icon: '📋' },
+            'partes-moles':    { nome: 'Partes Moles',      icon: '📋' },
+            tiroide:           { nome: 'Tireoide',          icon: '📋' },
+            paratiroide:       { nome: 'Paratireoide',      icon: '📋' },
+            'glandula-salivar':{ nome: 'Glândula Salivar',  icon: '📋' },
+            osso:              { nome: 'Osso',              icon: '📋' },
+        }
+    }
+};
+
+/* ============================================================
+   STATE
+============================================================ */
+let state = { view: 'home', sistema: null, item: null };
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+function navigateTo(view, sistema = null, item = null) {
+    state = { view, sistema, item };
+    syncNav();
+    render();
+    document.getElementById('main').scrollTop = 0;
+}
+
+function goItem(sistema, item) {
+    // Auto-open the group
+    openGroup(sistema);
+    navigateTo('item', sistema, item);
+}
+
+function toggleGroup(id) {
+    const sub  = document.getElementById('sub-' + id);
+    const btn  = document.getElementById('btn-' + id);
+    const open = sub.classList.contains('open');
+    sub.classList.toggle('open', !open);
+    btn.classList.toggle('open', !open);
+}
+
+function openGroup(id) {
+    const sub = document.getElementById('sub-' + id);
+    const btn = document.getElementById('btn-' + id);
+    sub.classList.add('open');
+    btn.classList.add('open');
+}
+
+function syncNav() {
+    // Reset all
+    document.querySelectorAll('.nav-item, .nav-sub-item').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-group-btn').forEach(el => el.classList.remove('group-active'));
+
+    if (state.view === 'home') {
+        document.getElementById('nav-home').classList.add('active');
+        return;
+    }
+
+    if (state.sistema) {
+        const btn = document.getElementById('btn-' + state.sistema);
+        if (btn) btn.classList.add('group-active');
+    }
+
+    if (state.item) {
+        const subItems = document.querySelectorAll(`#sub-${state.sistema} .nav-sub-item`);
+        subItems.forEach(el => {
+            if (el.getAttribute('onclick').includes(`'${state.item}'`)) {
+                el.classList.add('active');
+            }
+        });
+    }
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function render() {
+    const main = document.getElementById('main');
+    switch (state.view) {
+        case 'home':    main.innerHTML = renderHome();    break;
+        case 'sistema': main.innerHTML = renderSistema(); break;
+        case 'item':    main.innerHTML = renderItem();    break;
+    }
+}
+
+function renderHome() {
+    // Count totals
+    const totalSistemas = Object.keys(SISTEMAS).length;
+    const totalProtocolos = Object.values(SISTEMAS).reduce((acc, s) => acc + Object.keys(s.itens).length, 0);
+
+    const systemCards = Object.entries(SISTEMAS).map(([key, s]) => {
+        const count = Object.keys(s.itens).length;
+        return `
+        <div class="system-card" style="--system-color:${s.cor}" onclick="openSistema('${key}')">
+            <span class="system-card-arrow">›</span>
+            <span class="system-card-icon">${s.icon}</span>
+            <div class="system-card-name">${s.nome}</div>
+            <div class="system-card-count">${count} protocolos</div>
+        </div>`;
+    }).join('');
+
+    return `
+    <div class="home-hero">
+        <div class="hero-text">
+            <div class="hero-badge">🔬 Anatomia Patológica</div>
+            <h1>Manual de Macroscopia</h1>
+            <p>Guia prático e sistematizado para descrição macroscópica de peças cirúrgicas e biópsias em anatomia patológica.</p>
+        </div>
+        <div class="hero-icon">🦆</div>
     </div>
 
-    <script>
-        // Função simples para trocar o conteúdo sem recarregar a página
-        function loadContent(sistema) {
-            const content = document.getElementById('main-content');
-            
-            const paginas = {
-                'home': `<h1>Manual de Macroscopia</h1><p>Selecione um sistema ao lado.</p>`,
-                'gastro': `<h1>Gastrointestinal</h1><p>Conteúdo de Estômago, Cólon e Esôfago em breve...</p>`,
-                'mama': `<h1>Mama</h1><p>Protocolos de Mastectomia e Quadrantectomia...</p>`
-                // Você pode adicionar os outros aqui
-            };
+    <div class="stats-row">
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#dbeafe;">📁</div>
+            <div>
+                <div class="stat-value">${totalSistemas}</div>
+                <div class="stat-label">Sistemas</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#dcfce7;">📋</div>
+            <div>
+                <div class="stat-value">${totalProtocolos}</div>
+                <div class="stat-label">Protocolos</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon" style="background:#fef9c3;">🚧</div>
+            <div>
+                <div class="stat-value">Em construção</div>
+                <div class="stat-label">Status do portal</div>
+            </div>
+        </div>
+    </div>
 
-            content.innerHTML = paginas[sistema] || `<h1>Em desenvolvimento</h1>`;
-        }
-    </script>
+    <div class="section-heading">
+        <span class="section-heading-text">Sistemas disponíveis</span>
+        <div class="section-heading-line"></div>
+    </div>
+    <div class="systems-grid">${systemCards}</div>
+    `;
+}
+
+function renderSistema() {
+    const s = SISTEMAS[state.sistema];
+    if (!s) return '<p>Sistema não encontrado.</p>';
+
+    const cards = Object.entries(s.itens).map(([key, item]) => `
+        <div class="subspecialty-card" onclick="goItem('${state.sistema}','${key}')">
+            <div class="subcard-icon" style="background:${s.cor}18; color:${s.cor};">${item.icon}</div>
+            <div class="subcard-name">${item.nome}</div>
+            <span class="subcard-status">Em breve</span>
+        </div>
+    `).join('');
+
+    return `
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="#" onclick="navigateTo('home'); return false;">Início</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>${s.nome}</span>
+        </div>
+        <div class="page-title-row">
+            <div class="page-title-icon">${s.icon}</div>
+            <div>
+                <h1 class="page-title">${s.nome}</h1>
+                <p class="page-subtitle">${s.desc}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section-heading">
+        <span class="section-heading-text">Protocolos</span>
+        <div class="section-heading-line"></div>
+    </div>
+    <div class="subspecialty-grid">${cards}</div>
+    `;
+}
+
+function renderItem() {
+    const s    = SISTEMAS[state.sistema];
+    const item = s?.itens[state.item];
+    if (!s || !item) return '<p>Conteúdo não encontrado.</p>';
+
+    return `
+    <div class="page-header">
+        <div class="breadcrumb">
+            <a href="#" onclick="navigateTo('home'); return false;">Início</a>
+            <span class="breadcrumb-sep">›</span>
+            <a href="#" onclick="openSistema('${state.sistema}'); return false;">${s.nome}</a>
+            <span class="breadcrumb-sep">›</span>
+            <span>${item.nome}</span>
+        </div>
+        <div class="page-title-row">
+            <div class="page-title-icon">📋</div>
+            <div>
+                <h1 class="page-title">${item.nome}</h1>
+                <p class="page-subtitle">${s.nome} — Protocolo de Macroscopia</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="under-dev">
+        <span class="under-dev-icon">🚧</span>
+        <h3>Conteúdo em Desenvolvimento</h3>
+        <p>Este protocolo está sendo elaborado e estará disponível em breve.</p>
+    </div>
+    `;
+}
+
+function openSistema(key) {
+    openGroup(key);
+    navigateTo('sistema', key);
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+navigateTo('home');
+</script>
 </body>
 </html>
