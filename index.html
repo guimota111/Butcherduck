@@ -6,6 +6,8 @@
     <title>Butcher Duck | Patologia</title>
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Base Data -->
+    <script src="data.js"></script>
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
@@ -47,10 +49,14 @@
                 </div>
             </div>
             
-            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">
+            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()" style="margin-bottom: 8px;">
                 <span id="theme-text">Modo Escuro</span>
                 <i data-lucide="moon" id="theme-icon" style="width: 14px; height: 14px;"></i>
             </button>
+            <a href="admin.html" class="theme-toggle-btn" style="text-decoration: none; justify-content: center; background: rgba(59, 130, 246, 0.1); color: var(--accent); border: 1px solid rgba(59, 130, 246, 0.2);">
+                <i data-lucide="database" style="width: 14px; height: 14px;"></i>
+                <span>Painel CMS</span>
+            </a>
         </div>
     </nav>
 
@@ -74,91 +80,34 @@
 
 <script>
 /* ============================================================
-   DATA (Using Lucide Icons)
+   DATA LOADING (FROM BACKEND API)
 ============================================================ */
-const SISTEMAS = {
-    gastro: {
-        nome: 'Gastrointestinal',
-        icon: 'activity', 
-        cor: '#ef4444',
-        desc: 'Protocolo de análise macroscópica do trato gastrointestinal e órgãos anexos.',
-        itens: {
-            esofago:          { nome: 'Esôfago',          icon: 'clipboard-list' },
-            estomago:         { nome: 'Estômago',         icon: 'clipboard-list' },
-            'intestino-delgado': { nome: 'Intestino Delgado',  icon: 'clipboard-list' },
-            'colon-reto':     { nome: 'Cólon e Reto',     icon: 'clipboard-list' },
-            apendice:         { nome: 'Apêndice',         icon: 'clipboard-list' },
-            figado:           { nome: 'Fígado',           icon: 'clipboard-list' },
-            'vesicula-biliar':{ nome: 'Vesícula Biliar',  icon: 'clipboard-list' },
-            pancreas:         { nome: 'Pâncreas',         icon: 'clipboard-list' },
+let SISTEMAS = {};
+
+async function initData() {
+    try {
+        const response = await fetch('/api/sistemas');
+        if (response.ok) {
+            SISTEMAS = await response.json();
+        } else {
+            console.warn("API offline - Fallback default");
+            SISTEMAS = JSON.parse(JSON.stringify(DEFAULT_SISTEMAS));
         }
-    },
-    mama: {
-        nome: 'Mama',
-        icon: 'stethoscope',
-        cor: '#f97316',
-        desc: 'Protocolos de mastectomia, quadrantectomia e demais amostras mamárias.',
-        itens: {
-            'mastectomia-radical': { nome: 'Mastectomia Radical Modificada', icon: 'clipboard-list' },
-            'mastectomia-simples': { nome: 'Mastectomia Simples',            icon: 'clipboard-list' },
-            quadrantectomia:       { nome: 'Quadrantectomia',                icon: 'clipboard-list' },
-            setorectomia:          { nome: 'Setorectomia',                   icon: 'clipboard-list' },
-            'core-biopsy':         { nome: 'Core Biopsy',                    icon: 'clipboard-list' },
-            'linfonodo-sentinela': { nome: 'Linfonodo Sentinela',            icon: 'clipboard-list' },
-        }
-    },
-    genito: {
-        nome: 'Genitourinário',
-        icon: 'droplet',
-        cor: '#8b5cf6',
-        desc: 'Protocolo de análise macroscópica do sistema genitourinário masculino e feminino.',
-        itens: {
-            rim:      { nome: 'Rim — Nefrectomia',      icon: 'clipboard-list' },
-            bexiga:   { nome: 'Bexiga — Cistectomia',   icon: 'clipboard-list' },
-            prostata: { nome: 'Próstata',               icon: 'clipboard-list' },
-            testiculo:{ nome: 'Testículo',              icon: 'clipboard-list' },
-            penis:    { nome: 'Pênis',                  icon: 'clipboard-list' },
-            ureter:   { nome: 'Ureter',                 icon: 'clipboard-list' },
-        }
-    },
-    gineco: {
-        nome: 'Ginecológico',
-        icon: 'flower-2',
-        cor: '#ec4899',
-        desc: 'Protocolo de análise macroscópica de peças do sistema ginecológico.',
-        itens: {
-            'utero-prolapso':   { nome: 'Útero de Prolapso Uterino', icon: 'clipboard-list' },
-            'utero-miomatose':  { nome: 'Útero de Miomatose',        icon: 'clipboard-list' },
-            'utero-neoplasico': { nome: 'Útero Neoplásico',          icon: 'clipboard-list' },
-            'ovario-inocente':  { nome: 'Ovário Inocente',           icon: 'clipboard-list' },
-            'ovario-cistico':   { nome: 'Ovário Cístico',            icon: 'clipboard-list' },
-            'ovario-maligno':   { nome: 'Ovário Maligno',            icon: 'clipboard-list' },
-            'tuba-uterina':     { nome: 'Tuba Uterina',              icon: 'clipboard-list' },
-        }
-    },
-    pequenas: {
-        nome: 'Pequenas Peças',
-        icon: 'microscope',
-        cor: '#14b8a6',
-        desc: 'Protocolo de análise macroscópica de pequenas peças e biópsias cirúrgicas.',
-        itens: {
-            pele:              { nome: 'Pele',              icon: 'clipboard-list' },
-            linfonodo:         { nome: 'Linfonodo',         icon: 'clipboard-list' },
-            'partes-moles':    { nome: 'Partes Moles',      icon: 'clipboard-list' },
-            tiroide:           { nome: 'Tireoide',          icon: 'clipboard-list' },
-            paratiroide:       { nome: 'Paratireoide',      icon: 'clipboard-list' },
-            'glandula-salivar':{ nome: 'Glândula Salivar',  icon: 'clipboard-list' },
-            osso:              { nome: 'Osso',              icon: 'clipboard-list' },
-        }
+    } catch(err) {
+        console.warn("Network Error - Fallback default", err);
+        SISTEMAS = JSON.parse(JSON.stringify(DEFAULT_SISTEMAS));
     }
-};
+}
 
 /* ============================================================
    STATE & ONLOAD
 ============================================================ */
 let state = { view: 'home', sistema: null, item: null };
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    // 0. Carregar Dados da API Backend
+    await initData();
+
     // 1. Build Navigation dynamically 
     buildSidebar();
     
@@ -504,13 +453,28 @@ function renderSistema() {
     `;
 }
 
+function changeStep(newStep) {
+    state.currentStep = newStep;
+    render();
+}
+
 function renderItem() {
     const s    = SISTEMAS[state.sistema];
     const item = s?.itens[state.item];
     if (!s || !item) return '<p>Conteúdo não encontrado.</p>';
 
-    return `
-    <div class="animate-fade-in">
+    let passos = [];
+    try {
+        if(item.conteudo && item.conteudo.trim().startsWith('[')) {
+            passos = JSON.parse(item.conteudo);
+        } else if(item.conteudo && item.conteudo.trim().length > 0) {
+            passos = [{ id: Date.now(), texto: item.conteudo, imgBase64: '' }];
+        }
+    } catch(e) {
+        if(item.conteudo) passos = [{ id: Date.now(), texto: item.conteudo, imgBase64: '' }];
+    }
+
+    const headerHtml = `
         <div class="breadcrumb">
             <a href="#" onclick="navigateTo('home'); return false;">Início</a>
             <i data-lucide="chevron-right" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i>
@@ -519,22 +483,78 @@ function renderItem() {
             <span style="color: var(--text-primary); font-weight: 500;">${item.nome}</span>
         </div>
         
-        <div class="page-title-row">
+        <div class="page-title-row" style="margin-bottom: 24px;">
             <div class="page-title-icon">
                 <i data-lucide="${item.icon}" style="width: 28px; height: 28px;"></i>
             </div>
             <div>
                 <h1 class="page-title">${item.nome}</h1>
-                <p class="page-subtitle">${s.nome} — Protocolo de Macroscopia</p>
+                <p class="page-subtitle">${s.nome} — Guia de Macroscopia</p>
             </div>
         </div>
+    `;
 
-        <div class="under-dev animate-slide-up">
-            <div class="under-dev-icon">
-                <i data-lucide="hammer" style="width: 32px; height: 32px;"></i>
+    if (passos.length === 0) {
+        return `
+        <div class="animate-fade-in">
+            ${headerHtml}
+            <div class="under-dev animate-slide-up">
+                <div class="under-dev-icon">
+                    <i data-lucide="hammer" style="width: 32px; height: 32px;"></i>
+                </div>
+                <h3>Roteiro em Planejamento</h3>
+                <p>O protocolo guiado para "<strong>${item.nome}</strong>" está sendo atualizado pelo Dr. Gui. Em breve contará com fotos e roteiro técnico.</p>
             </div>
-            <h3>Conteúdo em Desenvolvimento</h3>
-            <p>O protocolo detalhado para "<strong>${item.nome}</strong>" está sendo atualizado pelo Dr. Gui e estará disponível em breve.</p>
+        </div>
+        `;
+    }
+
+    const current = state.currentStep || 0;
+    const passoAtual = passos[current];
+    
+    let dotsHtml = '<div style="display:flex; justify-content:center; gap:8px; margin-bottom: 24px; margin-top: 16px;">';
+    for(let i=0; i<passos.length; i++) {
+        dotsHtml += `<div style="width:12px; height:12px; border-radius:50%; background: ${i === current ? 'var(--accent)' : 'var(--sidebar-border)'}; cursor:pointer; transition: all 0.3s;" onclick="changeStep(${i})"></div>`;
+    }
+    dotsHtml += '</div>';
+
+    const hasPrev = current > 0;
+    const hasNext = current < passos.length - 1;
+
+    return `
+    <div class="animate-fade-in">
+        ${headerHtml}
+        
+        <div class="protocol-content animate-slide-up" style="background: var(--bg-surface); border-radius: 12px; border: 1px solid var(--border-color); overflow:hidden; display:flex; flex-direction:column; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            
+            ${passoAtual.imgBase64 ? 
+                `<div style="width: 100%; min-height: 250px; background: rgba(0,0,0,0.05); display:flex; justify-content:center; align-items:center; border-bottom: 1px solid var(--border-color);">
+                    <img src="${passoAtual.imgBase64}" style="max-width:100%; max-height:500px; object-fit:contain;">
+                 </div>` 
+                : ''
+            }
+            
+            <div style="padding: 32px;">
+                <div style="text-align:center; font-size: 0.85rem; color:var(--text-secondary); margin-bottom: 16px; font-weight:700; text-transform:uppercase; letter-spacing:1px; display:flex; justify-content:center; align-items:center; gap: 8px;">
+                    <i data-lucide="layers" style="width:14px;"></i> PASSO ${current + 1} DE ${passos.length}
+                </div>
+                
+                <div style="font-size: 1.15rem; line-height: 1.8; color: var(--text-primary); text-align: justify; margin-bottom: 32px;">
+                    ${(passoAtual.texto || '<i style="opacity:0.6;">Nenhuma anotação descritiva inserida para este passo.</i>').replace(/\n/g, '<br>')}
+                </div>
+                
+                ${dotsHtml}
+            </div>
+            
+            <div style="display:flex; border-top: 1px solid var(--border-color); background: var(--bg-primary);">
+                <button onclick="changeStep(${current - 1})" ${!hasPrev ? 'disabled' : ''} style="flex:1; padding: 20px; border:none; background:transparent; cursor:${hasPrev ? 'pointer' : 'not-allowed'}; font-weight:600; font-size: 1rem; color: ${hasPrev ? 'var(--text-primary)' : 'var(--border-color)'}; display:flex; align-items:center; justify-content:center; gap:8px; border-right: 1px solid var(--border-color); transition: background 0.2s;" onmouseover="${hasPrev ? "this.style.background='var(--sidebar-surface)'" : ''}" onmouseout="this.style.background='transparent'">
+                    <i data-lucide="arrow-left" style="width:18px;"></i> Anterior
+                </button>
+                <button onclick="changeStep(${current + 1})" ${!hasNext ? 'disabled' : ''} style="flex:1; padding: 20px; border:none; background:transparent; cursor:${hasNext ? 'pointer' : 'not-allowed'}; font-weight:600; font-size: 1rem; color: ${hasNext ? 'var(--accent)' : 'var(--border-color)'}; display:flex; align-items:center; justify-content:center; gap:8px; transition: background 0.2s;" onmouseover="${hasNext ? "this.style.background='var(--sidebar-surface)'" : ''}" onmouseout="this.style.background='transparent'">
+                    Próximo Passo <i data-lucide="arrow-right" style="width:18px;"></i>
+                </button>
+            </div>
+            
         </div>
     </div>
     `;
