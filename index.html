@@ -1,224 +1,308 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Butcher Duck | Manual de Macroscopia</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Butcher Duck | Patologia</title>
+    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 <div class="app">
 
+    <!-- ===== MOBILE OVERLAY ===== -->
+    <div class="mobile-overlay" id="mobileOverlay" onclick="closeMobileMenu()"></div>
+
     <!-- ===== SIDEBAR ===== -->
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
         <div class="sidebar-brand">
-            <div class="brand-emoji">🦆</div>
+            <div class="brand-icon-wrapper">
+                <i data-lucide="feather" style="width: 22px; height: 22px;"></i>
+            </div>
             <div class="brand-text">
                 <span class="brand-name">Butcher Duck</span>
-                <span class="brand-tagline">Manual de Macroscopia</span>
+                <span class="brand-tagline">Patologia</span>
             </div>
         </div>
 
         <div class="sidebar-nav">
             <a href="#" class="nav-item" id="nav-home" onclick="navigateTo('home'); return false;">
-                <span class="nav-icon">🏠</span>
+                <span class="nav-icon"><i data-lucide="home" style="width: 18px; height: 18px;"></i></span>
                 <span>Início</span>
             </a>
 
-            <div class="nav-label">SISTEMAS</div>
-
-            <!-- Gastrointestinal -->
-            <div class="nav-group">
-                <button class="nav-group-btn" id="btn-gastro" onclick="toggleGroup('gastro')">
-                    <span class="nav-icon">🫁</span>
-                    <span>Gastrointestinal</span>
-                    <span class="chevron">▾</span>
-                </button>
-                <div class="nav-sub-list" id="sub-gastro">
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','esofago'); return false;">Esôfago</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','estomago'); return false;">Estômago</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','intestino-delgado'); return false;">Intestino Delgado</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','colon-reto'); return false;">Cólon e Reto</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','apendice'); return false;">Apêndice</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','figado'); return false;">Fígado</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','vesicula-biliar'); return false;">Vesícula Biliar</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gastro','pancreas'); return false;">Pâncreas</a>
-                </div>
-            </div>
-
-            <!-- Mama -->
-            <div class="nav-group">
-                <button class="nav-group-btn" id="btn-mama" onclick="toggleGroup('mama')">
-                    <span class="nav-icon">🩺</span>
-                    <span>Mama</span>
-                    <span class="chevron">▾</span>
-                </button>
-                <div class="nav-sub-list" id="sub-mama">
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','mastectomia-radical'); return false;">Mastectomia Radical Modificada</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','mastectomia-simples'); return false;">Mastectomia Simples</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','quadrantectomia'); return false;">Quadrantectomia</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','setorectomia'); return false;">Setorectomia</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','core-biopsy'); return false;">Core Biopsy</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('mama','linfonodo-sentinela'); return false;">Linfonodo Sentinela</a>
-                </div>
-            </div>
-
-            <!-- Genitourinário -->
-            <div class="nav-group">
-                <button class="nav-group-btn" id="btn-genito" onclick="toggleGroup('genito')">
-                    <span class="nav-icon">🫀</span>
-                    <span>Genitourinário</span>
-                    <span class="chevron">▾</span>
-                </button>
-                <div class="nav-sub-list" id="sub-genito">
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','rim'); return false;">Rim — Nefrectomia</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','bexiga'); return false;">Bexiga — Cistectomia</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','prostata'); return false;">Próstata</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','testiculo'); return false;">Testículo</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','penis'); return false;">Pênis</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('genito','ureter'); return false;">Ureter</a>
-                </div>
-            </div>
-
-            <!-- Ginecológico -->
-            <div class="nav-group">
-                <button class="nav-group-btn" id="btn-gineco" onclick="toggleGroup('gineco')">
-                    <span class="nav-icon">🌸</span>
-                    <span>Ginecológico</span>
-                    <span class="chevron">▾</span>
-                </button>
-                <div class="nav-sub-list" id="sub-gineco">
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-prolapso'); return false;">Útero de Prolapso Uterino</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-miomatose'); return false;">Útero de Miomatose</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','utero-neoplasico'); return false;">Útero Neoplásico</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-inocente'); return false;">Ovário Inocente</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-cistico'); return false;">Ovário Cístico</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','ovario-maligno'); return false;">Ovário Maligno</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('gineco','tuba-uterina'); return false;">Tuba Uterina</a>
-                </div>
-            </div>
-
-            <!-- Pequenas Peças -->
-            <div class="nav-group">
-                <button class="nav-group-btn" id="btn-pequenas" onclick="toggleGroup('pequenas')">
-                    <span class="nav-icon">🔬</span>
-                    <span>Pequenas Peças</span>
-                    <span class="chevron">▾</span>
-                </button>
-                <div class="nav-sub-list" id="sub-pequenas">
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','pele'); return false;">Pele</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','linfonodo'); return false;">Linfonodo</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','partes-moles'); return false;">Partes Moles</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','tiroide'); return false;">Tireoide</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','paratiroide'); return false;">Paratireoide</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','glandula-salivar'); return false;">Glândula Salivar</a>
-                    <a href="#" class="nav-sub-item" onclick="goItem('pequenas','osso'); return false;">Osso</a>
-                </div>
-            </div>
+            <!-- Menus dinâmicos serão inseridos aqui -->
+            <div id="dynamic-menus"></div>
 
         </div><!-- /sidebar-nav -->
 
         <div class="sidebar-footer">
-            <div class="footer-avatar">👨‍⚕️</div>
-            <div>
-                <span class="footer-name">Dr. Gui</span>
-                <span class="footer-role">Patologia Cirúrgica</span>
+            <div class="user-profile">
+                <div class="footer-avatar">G</div>
+                <div>
+                    <span class="footer-name">Dr. Gui</span>
+                    <span class="footer-role">Patologia Cirúrgica</span>
+                </div>
             </div>
+            
+            <button class="theme-toggle-btn" id="themeToggle" onclick="toggleTheme()">
+                <span id="theme-text">Modo Escuro</span>
+                <i data-lucide="moon" id="theme-icon" style="width: 14px; height: 14px;"></i>
+            </button>
         </div>
     </nav>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <main class="main-content" id="main"></main>
+    <!-- ===== MAIN WRAPPER ===== -->
+    <div class="main-wrapper">
+        <!-- Top header for mobile -->
+        <header class="top-header">
+            <button class="menu-toggle" onclick="openMobileMenu()">
+                <i data-lucide="menu"></i>
+            </button>
+            <div class="header-actions">
+                <!-- Can add extra global buttons here later -->
+            </div>
+        </header>
+
+        <!-- Main content area -->
+        <main class="content-area" id="main"></main>
+    </div>
 
 </div>
 
 <script>
 /* ============================================================
-   DATA
+   DATA (Using Lucide Icons)
 ============================================================ */
 const SISTEMAS = {
     gastro: {
         nome: 'Gastrointestinal',
-        icon: '🫁',
+        icon: 'activity', 
         cor: '#ef4444',
         desc: 'Protocolo de análise macroscópica do trato gastrointestinal e órgãos anexos.',
         itens: {
-            esofago:          { nome: 'Esôfago',          icon: '📋' },
-            estomago:         { nome: 'Estômago',         icon: '📋' },
-            'intestino-delgado': { nome: 'Intestino Delgado',  icon: '📋' },
-            'colon-reto':     { nome: 'Cólon e Reto',     icon: '📋' },
-            apendice:         { nome: 'Apêndice',         icon: '📋' },
-            figado:           { nome: 'Fígado',           icon: '📋' },
-            'vesicula-biliar':{ nome: 'Vesícula Biliar',  icon: '📋' },
-            pancreas:         { nome: 'Pâncreas',         icon: '📋' },
+            esofago:          { nome: 'Esôfago',          icon: 'clipboard-list' },
+            estomago:         { nome: 'Estômago',         icon: 'clipboard-list' },
+            'intestino-delgado': { nome: 'Intestino Delgado',  icon: 'clipboard-list' },
+            'colon-reto':     { nome: 'Cólon e Reto',     icon: 'clipboard-list' },
+            apendice:         { nome: 'Apêndice',         icon: 'clipboard-list' },
+            figado:           { nome: 'Fígado',           icon: 'clipboard-list' },
+            'vesicula-biliar':{ nome: 'Vesícula Biliar',  icon: 'clipboard-list' },
+            pancreas:         { nome: 'Pâncreas',         icon: 'clipboard-list' },
         }
     },
     mama: {
         nome: 'Mama',
-        icon: '🩺',
+        icon: 'stethoscope',
         cor: '#f97316',
         desc: 'Protocolos de mastectomia, quadrantectomia e demais amostras mamárias.',
         itens: {
-            'mastectomia-radical': { nome: 'Mastectomia Radical Modificada', icon: '📋' },
-            'mastectomia-simples': { nome: 'Mastectomia Simples',            icon: '📋' },
-            quadrantectomia:       { nome: 'Quadrantectomia',                icon: '📋' },
-            setorectomia:          { nome: 'Setorectomia',                   icon: '📋' },
-            'core-biopsy':         { nome: 'Core Biopsy',                    icon: '📋' },
-            'linfonodo-sentinela': { nome: 'Linfonodo Sentinela',            icon: '📋' },
+            'mastectomia-radical': { nome: 'Mastectomia Radical Modificada', icon: 'clipboard-list' },
+            'mastectomia-simples': { nome: 'Mastectomia Simples',            icon: 'clipboard-list' },
+            quadrantectomia:       { nome: 'Quadrantectomia',                icon: 'clipboard-list' },
+            setorectomia:          { nome: 'Setorectomia',                   icon: 'clipboard-list' },
+            'core-biopsy':         { nome: 'Core Biopsy',                    icon: 'clipboard-list' },
+            'linfonodo-sentinela': { nome: 'Linfonodo Sentinela',            icon: 'clipboard-list' },
         }
     },
     genito: {
         nome: 'Genitourinário',
-        icon: '🫀',
+        icon: 'droplet',
         cor: '#8b5cf6',
         desc: 'Protocolo de análise macroscópica do sistema genitourinário masculino e feminino.',
         itens: {
-            rim:      { nome: 'Rim — Nefrectomia',      icon: '📋' },
-            bexiga:   { nome: 'Bexiga — Cistectomia',   icon: '📋' },
-            prostata: { nome: 'Próstata',               icon: '📋' },
-            testiculo:{ nome: 'Testículo',              icon: '📋' },
-            penis:    { nome: 'Pênis',                  icon: '📋' },
-            ureter:   { nome: 'Ureter',                 icon: '📋' },
+            rim:      { nome: 'Rim — Nefrectomia',      icon: 'clipboard-list' },
+            bexiga:   { nome: 'Bexiga — Cistectomia',   icon: 'clipboard-list' },
+            prostata: { nome: 'Próstata',               icon: 'clipboard-list' },
+            testiculo:{ nome: 'Testículo',              icon: 'clipboard-list' },
+            penis:    { nome: 'Pênis',                  icon: 'clipboard-list' },
+            ureter:   { nome: 'Ureter',                 icon: 'clipboard-list' },
         }
     },
     gineco: {
         nome: 'Ginecológico',
-        icon: '🌸',
+        icon: 'flower-2',
         cor: '#ec4899',
         desc: 'Protocolo de análise macroscópica de peças do sistema ginecológico.',
         itens: {
-            'utero-prolapso':   { nome: 'Útero de Prolapso Uterino', icon: '📋' },
-            'utero-miomatose':  { nome: 'Útero de Miomatose',        icon: '📋' },
-            'utero-neoplasico': { nome: 'Útero Neoplásico',          icon: '📋' },
-            'ovario-inocente':  { nome: 'Ovário Inocente',           icon: '📋' },
-            'ovario-cistico':   { nome: 'Ovário Cístico',            icon: '📋' },
-            'ovario-maligno':   { nome: 'Ovário Maligno',            icon: '📋' },
-            'tuba-uterina':     { nome: 'Tuba Uterina',              icon: '📋' },
+            'utero-prolapso':   { nome: 'Útero de Prolapso Uterino', icon: 'clipboard-list' },
+            'utero-miomatose':  { nome: 'Útero de Miomatose',        icon: 'clipboard-list' },
+            'utero-neoplasico': { nome: 'Útero Neoplásico',          icon: 'clipboard-list' },
+            'ovario-inocente':  { nome: 'Ovário Inocente',           icon: 'clipboard-list' },
+            'ovario-cistico':   { nome: 'Ovário Cístico',            icon: 'clipboard-list' },
+            'ovario-maligno':   { nome: 'Ovário Maligno',            icon: 'clipboard-list' },
+            'tuba-uterina':     { nome: 'Tuba Uterina',              icon: 'clipboard-list' },
         }
     },
     pequenas: {
         nome: 'Pequenas Peças',
-        icon: '🔬',
+        icon: 'microscope',
         cor: '#14b8a6',
         desc: 'Protocolo de análise macroscópica de pequenas peças e biópsias cirúrgicas.',
         itens: {
-            pele:              { nome: 'Pele',              icon: '📋' },
-            linfonodo:         { nome: 'Linfonodo',         icon: '📋' },
-            'partes-moles':    { nome: 'Partes Moles',      icon: '📋' },
-            tiroide:           { nome: 'Tireoide',          icon: '📋' },
-            paratiroide:       { nome: 'Paratireoide',      icon: '📋' },
-            'glandula-salivar':{ nome: 'Glândula Salivar',  icon: '📋' },
-            osso:              { nome: 'Osso',              icon: '📋' },
+            pele:              { nome: 'Pele',              icon: 'clipboard-list' },
+            linfonodo:         { nome: 'Linfonodo',         icon: 'clipboard-list' },
+            'partes-moles':    { nome: 'Partes Moles',      icon: 'clipboard-list' },
+            tiroide:           { nome: 'Tireoide',          icon: 'clipboard-list' },
+            paratiroide:       { nome: 'Paratireoide',      icon: 'clipboard-list' },
+            'glandula-salivar':{ nome: 'Glândula Salivar',  icon: 'clipboard-list' },
+            osso:              { nome: 'Osso',              icon: 'clipboard-list' },
         }
     }
 };
 
 /* ============================================================
-   STATE
+   STATE & ONLOAD
 ============================================================ */
 let state = { view: 'home', sistema: null, item: null };
+
+document.addEventListener('DOMContentLoaded', () => {
+    // 1. Build Navigation dynamically 
+    buildSidebar();
+    
+    // 2. Load theme preference
+    loadTheme();
+    
+    // 3. Render initial state
+    navigateTo('home');
+    
+    // 4. Draw icons
+    lucide.createIcons();
+});
+
+/* ============================================================
+   BUILD SIDEBAR
+============================================================ */
+function buildSidebar() {
+    const container = document.getElementById('dynamic-menus');
+    let html = `
+        <div class="module-header" id="mod-btn-macroscopia" onclick="toggleModule('macroscopia')">
+            <span>MÓDULO: MACROSCOPIA</span>
+            <i data-lucide="chevron-down" class="chevron" style="width:14px; height:14px;"></i>
+        </div>
+        <div class="module-content" id="mod-content-macroscopia">
+    `;
+    
+    Object.entries(SISTEMAS).forEach(([sysKey, sysData]) => {
+        html += `
+        <div class="nav-group">
+            <button class="nav-group-btn" id="btn-${sysKey}" onclick="toggleGroup('${sysKey}')">
+                <span class="nav-icon"><i data-lucide="${sysData.icon}" style="width:16px; height:16px;"></i></span>
+                <span>${sysData.nome}</span>
+                <i data-lucide="chevron-down" class="chevron" style="width:14px; height:14px;"></i>
+            </button>
+            <div class="nav-sub-list" id="sub-${sysKey}">
+        `;
+        
+        Object.entries(sysData.itens).forEach(([itemKey, itemData]) => {
+            html += `<a href="#" class="nav-sub-item" onclick="goItem('${sysKey}','${itemKey}'); return false;">${itemData.nome}</a>`;
+        });
+        
+        html += `</div></div>`;
+    });
+    
+    html += `</div>`; // Close Macroscopia Module
+
+    // Microscopia (Em Breve)
+    html += `
+        <div class="module-header collapsed" id="mod-btn-microscopia" onclick="toggleModule('microscopia')">
+            <span>MÓDULO: MICROSCOPIA</span>
+            <i data-lucide="chevron-down" class="chevron" style="width:14px; height:14px;"></i>
+        </div>
+        <div class="module-content collapsed" id="mod-content-microscopia">
+            <a href="#" class="nav-item" onclick="navigateTo('em_breve', 'Microscopia', 'Rotina de Lâminas (HE)'); return false;">
+                <span class="nav-icon"><i data-lucide="microscope" style="width: 18px; height: 18px;"></i></span>
+                <span>Lâminas (HE)</span>
+            </a>
+            <a href="#" class="nav-item" onclick="navigateTo('em_breve', 'Microscopia', 'Imuno-histoquímica'); return false;">
+                <span class="nav-icon"><i data-lucide="test-tubes" style="width: 18px; height: 18px;"></i></span>
+                <span>Imuno-histoquímica</span>
+            </a>
+        </div>
+    `;
+
+    html += `
+        <div class="module-header collapsed" id="mod-btn-ferramentas" onclick="toggleModule('ferramentas')">
+            <span>FERRAMENTAS (EM BREVE)</span>
+            <i data-lucide="chevron-down" class="chevron" style="width:14px; height:14px;"></i>
+        </div>
+        <div class="module-content collapsed" id="mod-content-ferramentas">
+            <a href="#" class="nav-item" onclick="navigateTo('em_breve', 'Ferramentas', 'Calculadoras Médicas'); return false;">
+                <span class="nav-icon"><i data-lucide="calculator" style="width: 18px; height: 18px;"></i></span>
+                <span>Calculadoras</span>
+            </a>
+        </div>
+    `;
+
+    container.innerHTML = html;
+}
+
+/* ============================================================
+   THEME LOGIC
+============================================================ */
+function loadTheme() {
+    const saved = localStorage.getItem('butcherduck_theme');
+    if (saved === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        updateThemeBtn(true);
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        updateThemeBtn(false);
+    }
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute('data-theme');
+    const isDark = currentTheme === 'dark';
+    const newTheme = isDark ? 'light' : 'dark';
+    
+    document.documentElement.setAttribute('data-theme', newTheme);
+    localStorage.setItem('butcherduck_theme', newTheme);
+    updateThemeBtn(!isDark);
+}
+
+function updateThemeBtn(isDark) {
+    const btnText = document.getElementById('theme-text');
+    const themeIcon = document.getElementById('theme-icon');
+    
+    if (isDark) {
+        btnText.textContent = 'Modo Claro';
+        themeIcon.setAttribute('data-lucide', 'sun');
+    } else {
+        btnText.textContent = 'Modo Escuro';
+        themeIcon.setAttribute('data-lucide', 'moon');
+    }
+    // Re-draw the icon that just changed
+    lucide.createIcons();
+}
+
+/* ============================================================
+   MOBILE MENU LOGIC
+============================================================ */
+function openMobileMenu() {
+    document.getElementById('sidebar').classList.add('open');
+    document.getElementById('mobileOverlay').classList.add('active');
+}
+
+function closeMobileMenu() {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('mobileOverlay').classList.remove('active');
+}
+
+/* ============================================================
+   MODULE ACCORDION LOGIC
+============================================================ */
+function toggleModule(id) {
+    const content = document.getElementById(`mod-content-${id}`);
+    const btn = document.getElementById(`mod-btn-${id}`);
+    if (content && btn) {
+        content.classList.toggle('collapsed');
+        btn.classList.toggle('collapsed');
+        // Because DOM dynamically assigns Lucide, we might want to re-evaluate or animations handle the chevron rotate via CSS.
+    }
+}
 
 /* ============================================================
    NAVIGATION
@@ -228,27 +312,34 @@ function navigateTo(view, sistema = null, item = null) {
     syncNav();
     render();
     document.getElementById('main').scrollTop = 0;
+    closeMobileMenu(); // In case we navigated on mobile
 }
 
 function goItem(sistema, item) {
-    // Auto-open the group
     openGroup(sistema);
     navigateTo('item', sistema, item);
+}
+
+function openSistema(key) {
+    openGroup(key);
+    navigateTo('sistema', key);
 }
 
 function toggleGroup(id) {
     const sub  = document.getElementById('sub-' + id);
     const btn  = document.getElementById('btn-' + id);
-    const open = sub.classList.contains('open');
-    sub.classList.toggle('open', !open);
-    btn.classList.toggle('open', !open);
+    const isOpen = sub.classList.contains('open');
+    sub.classList.toggle('open', !isOpen);
+    btn.classList.toggle('open', !isOpen);
 }
 
 function openGroup(id) {
     const sub = document.getElementById('sub-' + id);
     const btn = document.getElementById('btn-' + id);
-    sub.classList.add('open');
-    btn.classList.add('open');
+    if(sub && btn) {
+        sub.classList.add('open');
+        btn.classList.add('open');
+    }
 }
 
 function syncNav() {
@@ -277,72 +368,95 @@ function syncNav() {
 }
 
 /* ============================================================
-   RENDER
+   RENDER PAGES
 ============================================================ */
 function render() {
     const main = document.getElementById('main');
-    switch (state.view) {
-        case 'home':    main.innerHTML = renderHome();    break;
-        case 'sistema': main.innerHTML = renderSistema(); break;
-        case 'item':    main.innerHTML = renderItem();    break;
-    }
+    
+    // Clear first to trigger animations
+    main.innerHTML = '';
+    
+    setTimeout(() => {
+        switch (state.view) {
+            case 'home':    main.innerHTML = renderHome();    break;
+            case 'sistema': main.innerHTML = renderSistema(); break;
+            case 'item':    main.innerHTML = renderItem();    break;
+            case 'em_breve': main.innerHTML = renderEmBreve(); break;
+        }
+        lucide.createIcons(); // Re-draw icons inside newly injected HTML
+    }, 10);
 }
 
 function renderHome() {
-    // Count totals
     const totalSistemas = Object.keys(SISTEMAS).length;
     const totalProtocolos = Object.values(SISTEMAS).reduce((acc, s) => acc + Object.keys(s.itens).length, 0);
 
-    const systemCards = Object.entries(SISTEMAS).map(([key, s]) => {
-        const count = Object.keys(s.itens).length;
-        return `
-        <div class="system-card" style="--system-color:${s.cor}" onclick="openSistema('${key}')">
-            <span class="system-card-arrow">›</span>
-            <span class="system-card-icon">${s.icon}</span>
+    const systemCards = Object.entries(SISTEMAS).map(([key, s], idx) => `
+        <div class="system-card animate-slide-up" style="--system-color:${s.cor}; animation-delay: ${idx * 50}ms;" onclick="openSistema('${key}')">
+            <div class="system-card-icon">
+                <i data-lucide="${s.icon}" style="width: 24px; height: 24px;"></i>
+            </div>
             <div class="system-card-name">${s.nome}</div>
-            <div class="system-card-count">${count} protocolos</div>
-        </div>`;
-    }).join('');
+            <div class="system-card-count">
+                <i data-lucide="folder" style="width: 12px; height: 12px;"></i>
+                ${Object.keys(s.itens).length} protocolos
+            </div>
+        </div>
+    `).join('');
 
     return `
-    <div class="home-hero">
-        <div class="hero-text">
-            <div class="hero-badge">🔬 Anatomia Patológica</div>
-            <h1>Manual de Macroscopia</h1>
-            <p>Guia prático e sistematizado para descrição macroscópica de peças cirúrgicas e biópsias em anatomia patológica.</p>
+    <div class="animate-fade-in">
+        <div class="hero-glass">
+            <div class="hero-glass-content">
+                <div class="hero-text-block">
+                    <div class="hero-badge">🔬 Plataforma de Especialidade</div>
+                    <h1>Manual de Patologia</h1>
+                    <p>Guia sistematizado para descrição de peças cirúrgicas e biópsias (macroscópicas e visão futura de microscopia).</p>
+                </div>
+                <!-- Optional: a big subtle icon here instead of emoji -->
+                <div class="hero-icon-large">
+                    <i data-lucide="microscope" stroke-width="1.5" style="width: 56px; height: 56px;"></i>
+                </div>
+            </div>
         </div>
-        <div class="hero-icon">🦆</div>
-    </div>
 
-    <div class="stats-row">
-        <div class="stat-card">
-            <div class="stat-icon" style="background:#dbeafe;">📁</div>
-            <div>
-                <div class="stat-value">${totalSistemas}</div>
-                <div class="stat-label">Sistemas</div>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(59, 130, 246, 0.15); color: #3b82f6;">
+                    <i data-lucide="layout-grid"></i>
+                </div>
+                <div>
+                    <div class="stat-value">${totalSistemas}</div>
+                    <div class="stat-label">Sistemas</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #10b981;">
+                    <i data-lucide="files"></i>
+                </div>
+                <div>
+                    <div class="stat-value">${totalProtocolos}</div>
+                    <div class="stat-label">Protocolos</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+                    <i data-lucide="settings"></i>
+                </div>
+                <div>
+                    <div class="stat-value">Em dev</div>
+                    <div class="stat-label">Status atual</div>
+                </div>
             </div>
         </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background:#dcfce7;">📋</div>
-            <div>
-                <div class="stat-value">${totalProtocolos}</div>
-                <div class="stat-label">Protocolos</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon" style="background:#fef9c3;">🚧</div>
-            <div>
-                <div class="stat-value">Em construção</div>
-                <div class="stat-label">Status do portal</div>
-            </div>
-        </div>
-    </div>
 
-    <div class="section-heading">
-        <span class="section-heading-text">Sistemas disponíveis</span>
-        <div class="section-heading-line"></div>
+        <div class="section-heading">
+            <span class="section-heading-text">Módulo: Macroscopia</span>
+            <div class="section-heading-line"></div>
+        </div>
+        
+        <div class="systems-grid">${systemCards}</div>
     </div>
-    <div class="systems-grid">${systemCards}</div>
     `;
 }
 
@@ -350,35 +464,43 @@ function renderSistema() {
     const s = SISTEMAS[state.sistema];
     if (!s) return '<p>Sistema não encontrado.</p>';
 
-    const cards = Object.entries(s.itens).map(([key, item]) => `
-        <div class="subspecialty-card" onclick="goItem('${state.sistema}','${key}')">
-            <div class="subcard-icon" style="background:${s.cor}18; color:${s.cor};">${item.icon}</div>
+    const cards = Object.entries(s.itens).map(([key, item], idx) => `
+        <div class="subspecialty-card animate-slide-up" style="--system-color:${s.cor}; animation-delay: ${idx * 30}ms;" onclick="goItem('${state.sistema}','${key}')">
+            <div class="subcard-icon">
+                <i data-lucide="${item.icon}"></i>
+            </div>
             <div class="subcard-name">${item.nome}</div>
-            <span class="subcard-status">Em breve</span>
+            <span class="subcard-status">Pendente</span>
         </div>
     `).join('');
 
     return `
-    <div class="page-header">
+    <div class="animate-fade-in">
         <div class="breadcrumb">
-            <a href="#" onclick="navigateTo('home'); return false;">Início</a>
-            <span class="breadcrumb-sep">›</span>
+            <a href="#" onclick="navigateTo('home'); return false;">
+                <i data-lucide="home" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i> Início
+            </a>
+            <i data-lucide="chevron-right" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i>
             <span>${s.nome}</span>
         </div>
+        
         <div class="page-title-row">
-            <div class="page-title-icon">${s.icon}</div>
+            <div class="page-title-icon" style="background: ${s.cor}22; color: ${s.cor};">
+                <i data-lucide="${s.icon}" style="width: 28px; height: 28px;"></i>
+            </div>
             <div>
                 <h1 class="page-title">${s.nome}</h1>
                 <p class="page-subtitle">${s.desc}</p>
             </div>
         </div>
-    </div>
 
-    <div class="section-heading">
-        <span class="section-heading-text">Protocolos</span>
-        <div class="section-heading-line"></div>
+        <div class="section-heading">
+            <span class="section-heading-text">Protocolos de Peças</span>
+            <div class="section-heading-line"></div>
+        </div>
+        
+        <div class="subspecialty-grid">${cards}</div>
     </div>
-    <div class="subspecialty-grid">${cards}</div>
     `;
 }
 
@@ -388,40 +510,66 @@ function renderItem() {
     if (!s || !item) return '<p>Conteúdo não encontrado.</p>';
 
     return `
-    <div class="page-header">
+    <div class="animate-fade-in">
         <div class="breadcrumb">
             <a href="#" onclick="navigateTo('home'); return false;">Início</a>
-            <span class="breadcrumb-sep">›</span>
+            <i data-lucide="chevron-right" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i>
             <a href="#" onclick="openSistema('${state.sistema}'); return false;">${s.nome}</a>
-            <span class="breadcrumb-sep">›</span>
-            <span>${item.nome}</span>
+            <i data-lucide="chevron-right" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i>
+            <span style="color: var(--text-primary); font-weight: 500;">${item.nome}</span>
         </div>
+        
         <div class="page-title-row">
-            <div class="page-title-icon">📋</div>
+            <div class="page-title-icon">
+                <i data-lucide="${item.icon}" style="width: 28px; height: 28px;"></i>
+            </div>
             <div>
                 <h1 class="page-title">${item.nome}</h1>
                 <p class="page-subtitle">${s.nome} — Protocolo de Macroscopia</p>
             </div>
         </div>
-    </div>
 
-    <div class="under-dev">
-        <span class="under-dev-icon">🚧</span>
-        <h3>Conteúdo em Desenvolvimento</h3>
-        <p>Este protocolo está sendo elaborado e estará disponível em breve.</p>
+        <div class="under-dev animate-slide-up">
+            <div class="under-dev-icon">
+                <i data-lucide="hammer" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h3>Conteúdo em Desenvolvimento</h3>
+            <p>O protocolo detalhado para "<strong>${item.nome}</strong>" está sendo atualizado pelo Dr. Gui e estará disponível em breve.</p>
+        </div>
     </div>
     `;
 }
 
-function openSistema(key) {
-    openGroup(key);
-    navigateTo('sistema', key);
+function renderEmBreve() {
+    return `
+    <div class="animate-fade-in">
+        <div class="breadcrumb">
+            <a href="#" onclick="navigateTo('home'); return false;">Início</a>
+            <i data-lucide="chevron-right" class="breadcrumb-icon" style="width: 14px; height: 14px;"></i>
+            <span style="color: var(--text-primary); font-weight: 500;">${state.sistema}</span>
+        </div>
+        
+        <div class="page-title-row">
+            <div class="page-title-icon" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b;">
+                <i data-lucide="clock" style="width: 28px; height: 28px;"></i>
+            </div>
+            <div>
+                <h1 class="page-title">${state.item}</h1>
+                <p class="page-subtitle">Módulo Futuro</p>
+            </div>
+        </div>
+
+        <div class="under-dev animate-slide-up">
+            <div class="under-dev-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                <i data-lucide="construct" style="width: 32px; height: 32px;"></i>
+            </div>
+            <h3>Área em Planejamento</h3>
+            <p>Este módulo interno pertence à visão futura da plataforma e será desenvolvido em breve.</p>
+        </div>
+    </div>
+    `;
 }
 
-/* ============================================================
-   INIT
-============================================================ */
-navigateTo('home');
 </script>
 </body>
 </html>
