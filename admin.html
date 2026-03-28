@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Butcher Duck | Admin CMS</title>
+    <!-- Reaproveitamos o estilo global da branch aesthetic-upgrade -->
+    <link rel="stylesheet" href="style.css">
+    <script src="data.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .admin-layout { display: flex; height: 100vh; overflow: hidden; }
+        .admin-sidebar { width: 320px; background: var(--sidebar-bg); border-right: 1px solid var(--sidebar-border); display: flex; flex-direction: column; }
+        .admin-content { flex: 1; padding: 32px; overflow-y: auto; background: var(--bg-primary); }
+        .admin-sidebar-header { padding: 24px; border-bottom: 1px solid var(--sidebar-border); display: flex; flex-direction: column; gap: 8px;}
+        .admin-tree { flex: 1; overflow-y: auto; padding: 12px; }
+        
+        .tree-item { padding: 8px 12px; border-radius: 6px; cursor: pointer; color: var(--text-sidebar); display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font-size: 0.9rem; transition: background 0.2s; }
+        .tree-item:hover { background: var(--sidebar-surface); color: var(--accent); }
+        .tree-item-sub { padding-left: 36px; font-size: 0.85rem; color: #94a3b8; }
+        
+        /* Form Editor */
+        .editor-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-bottom: 24px;}
+        .form-group { margin-bottom: 16px; text-align: left; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 600; color: var(--text-secondary); font-size: 0.9rem; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-family: inherit; font-size: 0.95rem; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent); }
+        .form-group textarea { min-height: 400px; resize: vertical; line-height: 1.6; }
+        
+        .btn-primary { background: var(--accent); color: white; border: none; padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text-primary); padding: 10px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; gap: 8px; transition: all 0.2s; }
+        .btn-outline:hover { background: var(--bg-surface-hover); }
+
+        .toast { position: fixed; bottom: 20px; right: 20px; background: #10b981; color: white; padding: 12px 24px; border-radius: 8px; font-weight: 600; box-shadow: 0 4px 12px rgba(16,185,129,0.3); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 100;}
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* Login overlay */
+        #login-overlay { position: fixed; inset: 0; background: var(--bg-primary); display: flex; align-items: center; justify-content: center; z-index: 999; }
+        #login-overlay.hidden { display: none; }
+        .login-card { background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 40px; width: 100%; max-width: 360px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+        .login-card h2 { color: var(--text-inverse); margin: 0 0 8px; font-size: 1.4rem; }
+        .login-card p { color: var(--text-secondary); font-size: 0.9rem; margin: 0 0 28px; }
+        .login-card input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-primary); color: var(--text-primary); font-size: 1rem; box-sizing: border-box; margin-bottom: 12px; }
+        .login-card input:focus { outline: none; border-color: var(--accent); }
+        .login-card .btn-primary { width: 100%; justify-content: center; padding: 12px; font-size: 1rem; }
+        #login-error { color: #ef4444; font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
+    </style>
+</head>
+<body>
+
+<!-- LOGIN OVERLAY -->
+<div id="login-overlay">
+    <div class="login-card">
+        <i data-lucide="lock" style="width: 40px; height: 40px; color: var(--accent); margin-bottom: 16px;"></i>
+        <h2>Butcher Duck CMS</h2>
+        <p>Digite a senha para acessar o painel administrativo.</p>
+        <input type="password" id="login-password" placeholder="Senha" onkeydown="if(event.key==='Enter') doLogin()">
+        <button class="btn-primary" onclick="doLogin()"><i data-lucide="log-in" style="width: 16px;"></i> Entrar</button>
+        <div id="login-error"></div>
+    </div>
+</div>
+
+<div class="admin-layout">
+    
+    <!-- BARRA LATERAL ADMINISTRATIVA -->
+    <div class="admin-sidebar" id="sidebar">
+        <div class="admin-sidebar-header">
+            <h2 style="color: var(--text-inverse); display: flex; align-items: center; gap: 8px; font-size: 1.2rem; margin: 0;">
+                <i data-lucide="database" style="color: var(--accent);"></i> CMS Local
+            </h2>
+            <p style="font-size: 0.8rem; color: #64748b; margin:0;">Painel de gestão dos protocolos</p>
+            
+            <div style="display: flex; gap: 8px; margin-top: 16px;">
+                <button class="btn-outline" style="flex: 1; font-size: 0.75rem; padding: 8px 4px;" onclick="exportDB()" title="Baixa o arquivo .json oficial">
+                    <i data-lucide="download" style="width: 14px;"></i> Exportar BD
+                </button>
+                <button class="btn-outline" style="flex: 1; font-size: 0.75rem; padding: 8px 4px;" onclick="document.getElementById('file-upload').click()" title="Carrega um arquivo .json salvo">
+                    <i data-lucide="upload" style="width: 14px;"></i> Importar BD
+                </button>
+                <input type="file" id="file-upload" style="display: none;" accept=".json" onchange="importDB(event)">
+            </div>
+            
+            <a href="index.html" class="btn-outline" style="margin-top: 12px; font-size: 0.8rem; color: var(--accent); border-color: rgba(59, 130, 246, 0.3); text-decoration: none;">
+                <i data-lucide="arrow-left" style="width: 14px;"></i> Voltar à Plataforma
+            </a>
+        </div>
+        
+        <div class="admin-tree" id="tree-container">
+            <!-- Árvore gerada via Javascript -->
+        </div>
+    </div>
+
+    <!-- ÁREA CENTRAL DO EDITOR -->
+    <div class="admin-content" id="editor-container">
+        <div class="editor-card" style="text-align: center; color: var(--text-secondary); padding: 80px 20px;">
+            <i data-lucide="edit-3" style="width: 48px; height: 48px; opacity: 0.3; margin-bottom: 16px; display: block; margin-left: auto; margin-right: auto;"></i>
+            <h3>Selecione um Arquivo no Menu</h3>
+            <p style="max-width: 400px; margin: 12px auto; line-height: 1.5; font-size: 0.95rem;">Clique em qualquer sub-item na barra de navegação à esquerda para redigir ou editar o texto do protocolo clínico dele.</p>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast"><i data-lucide="check-circle" style="width: 18px; display:inline-block; vertical-align: middle;"></i> Dados salvos localmente!</div>
+
+<script>
+let CMS_DATA = {};
+let currentSelection = { type: null, sysKey: null, itemKey: null };
+let adminToken = null;
+
+/* LOGIN */
+async function doLogin() {
+    const password = document.getElementById('login-password').value;
+    const errorEl = document.getElementById('login-error');
+    errorEl.textContent = '';
+
+    try {
+        const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password })
+        });
+        const data = await res.json();
+        if (!res.ok) {
+            errorEl.textContent = data.error || 'Senha incorreta.';
+            return;
+        }
+        adminToken = data.token;
+        sessionStorage.setItem('admin_token', adminToken);
+        document.getElementById('login-overlay').classList.add('hidden');
+        await initCMS();
+    } catch(err) {
+        errorEl.textContent = 'Servidor offline. Inicie o node server.';
+    }
+}
+
+/* INICIALIZAR CMS VIA API */
+document.addEventListener('DOMContentLoaded', async () => {
+    loadTheme();
+    lucide.createIcons();
+
+    // Verifica token existente na sessão
+    const savedToken = sessionStorage.getItem('admin_token');
+    if (savedToken) {
+        try {
+            const check = await fetch('/api/auth/check', {
+                headers: { 'Authorization': `Bearer ${savedToken}` }
+            });
+            if (check.ok) {
+                adminToken = savedToken;
+                document.getElementById('login-overlay').classList.add('hidden');
+                await initCMS();
+                return;
+            }
+        } catch(e) { /* servidor offline */ }
+    }
+    // Token ausente ou inválido — exibe tela de login
+});
+
+async function initCMS() {
+    try {
+        const res = await fetch('/api/sistemas');
+        if (res.ok) {
+            CMS_DATA = await res.json();
+        } else {
+            CMS_DATA = JSON.parse(JSON.stringify(DEFAULT_SISTEMAS));
+        }
+    } catch(err) {
+        console.warn("Servidor offline, utilizando base estática.", err);
+        CMS_DATA = JSON.parse(JSON.stringify(DEFAULT_SISTEMAS));
+    }
+    renderTree();
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('butcherduck_theme');
+    document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+}
+
+/* ÁRVORE VISUAL (BARRA LATERAL) */
+function renderTree() {
+    const container = document.getElementById('tree-container');
+    let html = '';
+    
+    Object.entries(CMS_DATA).forEach(([sysKey, sysData]) => {
+        // Título do Sistema
+        html += `
+        <div class="tree-item" onclick="openSystemEditor('${sysKey}')">
+            <i data-lucide="${sysData.icon || 'folder'}" style="width: 16px;"></i> 
+            <b style="color: var(--text-inverse);">${sysData.nome}</b>
+        </div>`;
+        
+        // Protocolos
+        Object.entries(sysData.itens).forEach(([itemKey, itemData]) => {
+            const hasContent = itemData.conteudo && itemData.conteudo.trim().length > 0;
+            const contentIcon = hasContent ? '<i data-lucide="check" style="width: 12px; color: #10b981; margin-left: auto;"></i>' : '';
+            
+            html += `
+            <div class="tree-item tree-item-sub" onclick="openProtocolEditor('${sysKey}', '${itemKey}')">
+                <i data-lucide="file-text" style="width: 14px;"></i> 
+                ${itemData.nome}
+                ${contentIcon}
+            </div>`;
+        });
+    });
+    
+    container.innerHTML = html;
+    lucide.createIcons();
+}
+
+/* CARREGAR FORMULÁRIO (SISTEMA) */
+function openSystemEditor(sysKey) {
+    currentSelection = { type: 'system', sysKey, itemKey: null };
+    const sys = CMS_DATA[sysKey];
+    
+    const html = `
+        <div class="page-title-row" style="margin-bottom: 24px;">
+            <div class="page-title-icon"><i data-lucide="folder-cog"></i></div>
+            <div>
+                <h1 class="page-title">Módulo: ${sys.nome}</h1>
+                <p class="page-subtitle">ID Único: ${sysKey}</p>
+            </div>
+        </div>
+        <div class="editor-card animate-fade-in">
+            <div class="form-group">
+                <label>Nome Amigável do Módulo</label>
+                <input type="text" id="sys-nome" value="${sys.nome}">
+            </div>
+            <div class="form-group">
+                <label>Descrição Opcional</label>
+                <input type="text" id="sys-desc" value="${sys.desc || ''}">
+            </div>
+            <div class="form-group">
+                <label>Cor do Módulo (Hexadecimal - Padrão UX)</label>
+                <input type="color" id="sys-cor" value="${sys.cor || '#000000'}" style="height: 54px; width: 100px; padding: 4px; cursor: pointer;">
+            </div>
+            
+            <button class="btn-primary" onclick="saveSystem()"><i data-lucide="save"></i> Salvar Módulo</button>
+        </div>
+    `;
+    
+    document.getElementById('editor-container').innerHTML = html;
+    lucide.createIcons();
+}
+
+let currentPassos = [];
+
+/* CARREGAR FORMULÁRIO (PROTOCOLO / WIZARD) */
+function openProtocolEditor(sysKey, itemKey) {
+    currentSelection = { type: 'item', sysKey, itemKey };
+    const sys = CMS_DATA[sysKey];
+    const item = sys.itens[itemKey];
+    
+    // Migração transparente de texto legado para Array JSON
+    try {
+        if(item.conteudo && item.conteudo.trim().startsWith('[')) {
+            currentPassos = JSON.parse(item.conteudo);
+        } else if(item.conteudo && item.conteudo.trim().length > 0) {
+            currentPassos = [{ id: Date.now(), texto: item.conteudo, imgBase64: '' }];
+        } else {
+            currentPassos = [];
+        }
+    } catch(e) {
+        currentPassos = [{ id: Date.now(), texto: item.conteudo || '', imgBase64: '' }];
+    }
+    
+    renderProtocolEditorUI(sys, item);
+}
+
+function renderProtocolEditorUI(sys, item) {
+    let passosHtml = '';
+    
+    if(currentPassos.length === 0) {
+        passosHtml = `<div style="text-align:center; padding: 20px; color: var(--text-secondary);">Nenhum passo criado. Clique no botão abaixo para iniciar o roteiro.</div>`;
+    } else {
+        currentPassos.forEach((passo, idx) => {
+            passosHtml += `
+            <div class="passo-card" style="background: var(--bg-primary); padding: 16px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                    <strong style="color:var(--text-inverse);"><i data-lucide="layers" style="width:14px; margin-right:4px;"></i> Passo ${idx + 1}</strong>
+                    <button class="btn-outline" style="padding:4px 8px; font-size:0.8rem; border-color:#ef4444; color:#ef4444;" onclick="removePasso(${idx})"><i data-lucide="trash-2" style="width:14px;"></i></button>
+                </div>
+                
+                <div class="form-group">
+                    <label>Anexar Fotografia (Opcional)</label>
+                    <div style="display:flex; gap:12px; align-items:center; flex-wrap: wrap;">
+                        ${passo.imgBase64 ? 
+                            `<img src="${passo.imgBase64}" style="width:100px; height:100px; object-fit:cover; border-radius:6px; border:1px solid var(--border-color); box-shadow:0 2px 4px rgba(0,0,0,0.1);">` 
+                            : `<div style="width:100px; height:100px; background:var(--bg-surface); border-radius:6px; display:flex; align-items:center; justify-content:center; border:1px dashed var(--border-color);"><i data-lucide="image" style="opacity:0.3; width:24px;"></i></div>`
+                        }
+                        <div>
+                            <input type="file" accept="image/png, image/jpeg, image/webp" onchange="handleImageUpload(event, ${idx})" style="max-width:250px; font-size: 0.8rem; padding: 8px;">
+                            ${passo.imgBase64 ? `<br><button class="btn-outline" style="padding:4px 8px; margin-top:8px; font-size:0.8rem;" onclick="removeImage(${idx})"><i data-lucide="x-circle" style="width:14px;"></i> Remover Imagem</button>` : ''}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Anotações do Passo (Aceita HTML/Negrito)</label>
+                    <textarea id="passo-texto-${idx}" style="min-height: 120px;" placeholder="Descreva a técnica cirúrgica ou anatomia macroscópica...">${passo.texto || ''}</textarea>
+                </div>
+            </div>`;
+        });
+    }
+
+    const html = `
+        <div class="page-title-row" style="margin-bottom: 24px;">
+            <div class="page-title-icon" style="background: ${sys.cor}22; color: ${sys.cor};"><i data-lucide="file-edit"></i></div>
+            <div>
+                <h1 class="page-title">${item.nome}</h1>
+                <p class="page-subtitle">Guia Passo-a-Passo: ${sys.nome}</p>
+            </div>
+        </div>
+        <div class="editor-card animate-fade-in">
+            <div class="form-group">
+                <label>Título do Protocolo</label>
+                <input type="text" id="item-nome" value="${item.nome}">
+            </div>
+            
+            <h3 style="margin-top: 32px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border-color); color: var(--text-inverse); display:flex; align-items:center; gap:8px;">
+                <i data-lucide="film"></i> Roteiro de Macroscopia
+            </h3>
+            
+            <div id="passos-container" style="max-height: 60vh; overflow-y: auto; padding-right: 8px;">
+                ${passosHtml}
+            </div>
+            
+            <div style="display:flex; margin-top: 16px;">
+                <button class="btn-outline" onclick="addPasso()" style="flex:1; border-style:dashed; padding:16px; background: rgba(59,130,246,0.05); color: var(--accent);"><i data-lucide="plus-circle"></i> Adicionar Próximo Passo</button>
+            </div>
+            
+            <div style="margin-top: 32px; text-align: right;">
+                <button class="btn-primary" onclick="saveProtocol()"><i data-lucide="save"></i> Salvar Protocolo Inteiro e Sincronizar</button>
+            </div>
+        </div>
+    `;
+    document.getElementById('editor-container').innerHTML = html;
+    lucide.createIcons();
+}
+
+function syncPassosText() {
+    currentPassos.forEach((p, idx) => {
+        const txt = document.getElementById(`passo-texto-${idx}`);
+        if(txt) p.texto = txt.value;
+    });
+}
+
+function addPasso() {
+    syncPassosText();
+    currentPassos.push({ id: Date.now(), texto: '', imgBase64: '' });
+    renderProtocolEditorUI(CMS_DATA[currentSelection.sysKey], CMS_DATA[currentSelection.sysKey].itens[currentSelection.itemKey]);
+}
+
+function removePasso(idx) {
+    if(!confirm("Tem certeza que deseja apagar esse passo para sempre?")) return;
+    syncPassosText();
+    currentPassos.splice(idx, 1);
+    renderProtocolEditorUI(CMS_DATA[currentSelection.sysKey], CMS_DATA[currentSelection.sysKey].itens[currentSelection.itemKey]);
+}
+
+function removeImage(idx) {
+    syncPassosText();
+    currentPassos[idx].imgBase64 = '';
+    renderProtocolEditorUI(CMS_DATA[currentSelection.sysKey], CMS_DATA[currentSelection.sysKey].itens[currentSelection.itemKey]);
+}
+
+function handleImageUpload(event, idx) {
+    const file = event.target.files[0];
+    if(!file) return;
+    
+    // Alerta caso arquivo exceda 5MB para otimização do banco
+    if(file.size > 5 * 1024 * 1024) {
+        alert("Atenção: A imagem tem mais que 5MB. Prefira imagens menores para evitar que o banco fique pesado.");
+    }
+    
+    syncPassosText(); // Salva texto digitado
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        currentPassos[idx].imgBase64 = e.target.result;
+        renderProtocolEditorUI(CMS_DATA[currentSelection.sysKey], CMS_DATA[currentSelection.sysKey].itens[currentSelection.itemKey]);
+    };
+    reader.readAsDataURL(file);
+}
+
+function saveProtocol() {
+    const { sysKey, itemKey } = currentSelection;
+    syncPassosText();
+    CMS_DATA[sysKey].itens[itemKey].nome = document.getElementById('item-nome').value;
+    CMS_DATA[sysKey].itens[itemKey].conteudo = JSON.stringify(currentPassos);
+    commitToBrowser();
+}
+
+async function commitToBrowser() {
+    // Escreve os dados editados pro Banco de Dados Oficial do Backend
+    try {
+        const response = await fetch('/api/sistemas/sync', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${adminToken}`
+            },
+            body: JSON.stringify(CMS_DATA)
+        });
+        
+        if (response.ok) {
+            renderTree();
+            const toast = document.getElementById('toast');
+            toast.innerHTML = '<i data-lucide="check-circle" style="width: 18px; display:inline-block; vertical-align: middle;"></i> Salvo no Banco SQLite!';
+            lucide.createIcons();
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        } else {
+            alert('Erro no Servidor. Não foi possível comunicar com o SQLite.');
+        }
+    } catch(err) {
+        alert('Servidor Backend Offline. Por favor inicie o node server.');
+    }
+}
+
+/* REGRAS DE EXPORT/IMPORT .JSON */
+function exportDB() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(CMS_DATA, null, 4));
+    const downloader = document.createElement('a');
+    downloader.href = dataStr;
+    downloader.download = "patologia_backup.json"; 
+    downloader.click();
+}
+
+function importDB(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const parsedFile = JSON.parse(e.target.result);
+            CMS_DATA = parsedFile;
+            commitToBrowser();
+            document.getElementById('editor-container').innerHTML = `
+                <div class="editor-card" style="text-align: center; color: #10b981; padding: 60px;">
+                    <i data-lucide="check-circle" style="width: 64px; height: 64px; margin-bottom: 16px;"></i>
+                    <h3>Base Restaurada e Sincronizada!</h3>
+                    <p style="color: var(--text-secondary);">Os novos módulos foram injetados no servidor real de Patologia.</p>
+                </div>
+            `;
+            lucide.createIcons();
+        } catch(err) {
+            alert('Falha crítica: O arquivo importado não é compatível.');
+        }
+    };
+    reader.readAsText(file);
+}
+
+</script>
+</body>
+</html>
